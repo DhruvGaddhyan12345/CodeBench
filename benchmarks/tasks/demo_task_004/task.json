@@ -1,0 +1,1 @@
+{"task_id":"demo-004","repository":"benchmarks/tasks/demo_task_004/repository","description":"Return a defensive copy from tags.","test_command":"python -m unittest -q","timeout_seconds":30,"expected_behavior":"tags returns a new list","agent_hints":[{"path":"catalog.py","old":"return self._tags","new":"return list(self._tags)"}]}

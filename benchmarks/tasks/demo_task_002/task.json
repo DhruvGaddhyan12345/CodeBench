@@ -1,0 +1,1 @@
+{"task_id":"demo-002","repository":"benchmarks/tasks/demo_task_002/repository","description":"Fix is_even to recognize even integers.","test_command":"python -m unittest -q","timeout_seconds":30,"expected_behavior":"is_even(4) is true","agent_hints":[{"path":"numbers.py","old":"return value % 2 == 1","new":"return value % 2 == 0"}]}

@@ -1,0 +1,3 @@
+strategy: react
+tasks: benchmarks/tasks
+output: reports/evaluations

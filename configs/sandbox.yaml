@@ -1,0 +1,5 @@
+cpu_limit: 1.0
+memory_limit_mb: 512
+timeout_seconds: 120
+network_disabled: true
+user: "1000:1000"

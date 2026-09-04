@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["task_id", "repository", "description", "test_command"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "repository": {"type": "string", "minLength": 1},
+    "base_commit": {"type": ["string", "null"]},
+    "description": {"type": "string", "minLength": 1},
+    "test_command": {"type": "string", "minLength": 1},
+    "working_directory": {"type": "string"},
+    "timeout_seconds": {"type": "integer", "minimum": 1},
+    "expected_behavior": {"type": "string"},
+    "agent_hints": {"type": "array"}
+  },
+  "additionalProperties": true
+}

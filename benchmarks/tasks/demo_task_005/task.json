@@ -1,0 +1,1 @@
+{"task_id":"demo-005","repository":"benchmarks/tasks/demo_task_005/repository","description":"Use a strict comparison for the adult boundary.","test_command":"python -m unittest -q","timeout_seconds":30,"expected_behavior":"age 18 is adult","agent_hints":[{"path":"access.py","old":"return age > 18","new":"return age >= 18"}]}

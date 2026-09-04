@@ -1,0 +1,1 @@
+{"task_id":"demo-003","repository":"benchmarks/tasks/demo_task_003/repository","description":"Handle the empty list in average.","test_command":"python -m unittest -q","timeout_seconds":30,"expected_behavior":"average([]) returns 0","agent_hints":[{"path":"stats.py","old":"return sum(values) / len(values)","new":"return sum(values) / len(values) if values else 0"}]}

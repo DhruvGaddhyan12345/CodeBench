@@ -1,0 +1,1 @@
+{"task_id":"demo-001","repository":"benchmarks/tasks/demo_task_001/repository","description":"Fix add() so it returns the sum of two numbers.","test_command":"python -m unittest -q","timeout_seconds":30,"expected_behavior":"add(2, 3) returns 5","agent_hints":[{"path":"calculator.py","old":"return left - right","new":"return left + right"}]}
