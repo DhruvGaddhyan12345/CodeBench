@@ -1,44 +1,52 @@
-# CodeBench - Coding-Agent Evaluation & Safety Platform
+# CodeBench — Coding-Agent Evaluation & Safety Platform
 
-CodeBench is a local evaluation harness for autonomous coding agents, not a coding model. It provides a controlled tool interface, disposable repository workspaces, test-based grading, reproducible runs, and failure analysis.
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Sandbox-blue.svg)](https://www.docker.com/)
+[![SWE-bench](https://img.shields.io/badge/SWE--bench-Lite-orange.svg)](https://www.swebench.com/)
 
-## Problem and solution
+CodeBench is a **reproducible evaluation and safety platform for autonomous coding agents**.
 
-Agent-generated commands and patches should not run directly on a developer's machine, and an agent's claim of success is not evidence. CodeBench copies each repository into a disposable workspace, exposes six observable operations, runs the task tests, and records the result and trajectory.
+It evaluates repository-level software engineering tasks by placing coding agents behind a controlled tool interface, executing their changes inside isolated environments, grading patches using tests rather than self-reported success, and recording complete execution trajectories for reliability analysis.
+
+CodeBench is an **evaluation platform, not a coding model**.
+
+---
+
+## Why CodeBench?
+
+Autonomous coding agents can modify repositories, execute commands, install dependencies, and run tests. Evaluating these agents directly on a developer's machine creates two problems:
+
+1. **Safety** — agent-generated commands should not have unrestricted access to the host system.
+2. **Evaluation** — an agent claiming that a task is complete does not prove that the repository actually works.
+
+CodeBench addresses both problems:
 
 ```text
-Coding Agent -> Tool Interface -> Sandbox -> Repository -> Patch -> Tests -> Report
-```
-
-## Components
-
-The task manager validates task metadata. The tool interface provides `repository_search`, `file_read`, `apply_patch`, `shell_command`, `test_execution`, and `task_inspection`. The sandbox has a local disposable backend plus Docker runtime configuration. The deterministic demo agent exercises the same tools an external agent can later implement. The grader trusts test outcomes, while the trajectory and failure analyzer explain behavior rather than only returning `FAILED`.
-
-## Safety model
-
-Docker runs use a fresh container with disabled networking, a non-root user, CPU and memory limits, an isolated workspace, dropped capabilities, and a wall-clock timeout. `DockerSandbox` invokes the Docker CLI and routes shell/test commands through that container. Use `--sandbox docker` to select it. The default demo uses `LocalSandbox` for portability when Docker is unavailable; it is process/filesystem isolation for a copied workspace, not a perfect security boundary. `scripts/run_safety_tests.py` exercises the live boundary when the daemon is available and reports infrastructure failures otherwise.
-
-## Installation and quick start
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m pip install -e .
-python scripts/run_demo.py
-python -m pytest
-```
-
-The demo creates `reports/evaluations/task_results.json` and `evaluation_report.html`. The included five tasks are local demonstrations, not SWE-bench results. List tasks with `python -m codebench.cli task list`, or run a benchmark with `python scripts/run_benchmark.py --tasks benchmarks/tasks --runs 3`.
-
-## Metrics and reproducibility
-
-Reports contain resolution status, measured execution time, tool calls, full structured trajectory, test output, strategy, and token usage as `null` when unavailable. `scripts/repeat_evaluation.py --task demo-001 --runs 3` records each outcome and flags differing statuses as flakiness. No benchmark numbers are hard-coded.
-
-## Failure categories
-
-Failures are classified as Localization failure, Patch-generation failure, Timeout, Test-execution failure, or Flakiness. Classification remains conservative and returns no category for a passing task.
-
-## SWE-bench compatibility and limitations
-
-`TaskSpec` contains the concepts needed to adapt an SWE-bench Lite record: task ID, repository, base commit, problem statement, test command, and result. The repository does not download or claim to evaluate SWE-bench. A production deployment would need stronger container hardening, a Docker lifecycle backend, real LLM adapters, patch capture from Git, and broader benchmark coverage.
+Coding Agent
+     │
+     ▼
+Controlled Tool Interface
+     │
+     ▼
+Isolated Sandbox
+     │
+     ▼
+Repository Workspace
+     │
+     ├── Search
+     ├── Read
+     ├── Patch
+     ├── Execute
+     └── Test
+     │
+     ▼
+Generated Patch
+     │
+     ▼
+Test-Based Grading
+     │
+     ▼
+Trajectory + Metrics
+     │
+     ▼
+Reliability / Failure Analysis
