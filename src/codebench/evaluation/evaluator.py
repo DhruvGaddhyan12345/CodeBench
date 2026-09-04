@@ -1,6 +1,8 @@
 from codebench.agents import DemoAgent
 from codebench.analysis import classify_failure
 from codebench.grading import grade
+from statistics import median
+
 from codebench.sandbox import DockerSandbox, LocalSandbox
 
 
@@ -23,7 +25,14 @@ def evaluate_tasks(tasks, strategy: str = "react", sandbox: str = "local") -> di
     results = [evaluate_task(task, strategy, sandbox) for task in tasks]
     resolved = sum(item["status"] == "PASS" for item in results)
     times = [item["execution_time_seconds"] for item in results]
+    failures = {}
+    for item in results:
+        category = item["failure_category"]
+        if category:
+            failures[category] = failures.get(category, 0) + 1
     return {"results": results, "summary": {"tasks": len(results), "resolved": resolved,
-            "resolution_rate": resolved / len(results) if results else 0,
-            "average_execution_time_seconds": sum(times) / len(times) if times else 0,
-            "average_tool_calls": sum(item["tool_calls"] for item in results) / len(results) if results else 0}}
+        "resolution_rate": resolved / len(results) if results else 0,
+        "average_execution_time_seconds": sum(times) / len(times) if times else 0,
+        "median_execution_time_seconds": median(times) if times else 0,
+        "average_tool_calls": sum(item["tool_calls"] for item in results) / len(results) if results else 0,
+        "failure_distribution": failures, "strategy": strategy, "sandbox": sandbox}}

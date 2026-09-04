@@ -27,6 +27,11 @@ class DemoAgent:
         context = ToolContext(task, root, command_executor)
         tools = RepositoryTools(context)
         tools.task_inspection()
+        if self.strategy == "plan-execute":
+            context.trajectory.append({"step": len(context.trajectory) + 1, "tool": "plan",
+                                       "input": {"task_id": task.task_id},
+                                       "output": {"steps": ["localize", "read", "patch", "test"]},
+                                       "ok": True, "error": None, "duration_ms": 0.0})
         for hint in task.agent_hints:
             tools.repository_search(hint["old"][:40])
             tools.file_read(hint["path"])

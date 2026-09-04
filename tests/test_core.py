@@ -7,7 +7,7 @@ from codebench.analysis import classify_failure
 from codebench.evaluation import evaluate_tasks
 from codebench.reporting import write_html, write_json
 from codebench.sandbox import DockerSandboxConfig, LocalSandbox
-from codebench.tasks import discover_tasks
+from codebench.tasks import discover_tasks, from_swebench_record
 from codebench.tools import RepositoryTools, ToolContext
 
 
@@ -43,6 +43,15 @@ def test_demo_evaluation_and_failure_categories():
     assert all(item["status"] == "PASS" for item in result["results"])
     assert classify_failure("FAIL", [{"tool": "file_read"}]) == "Localization failure"
     assert classify_failure("TIMEOUT", []) == "Timeout"
+
+
+def test_swebench_adapter_and_aggregate_metrics():
+    task = from_swebench_record({"instance_id": "numpy-1", "problem_statement": "Fix bug",
+                                 "base_commit": "abc123"}, "/tmp/repository")
+    assert task.task_id == "numpy-1"
+    result = evaluate_tasks(discover_tasks(ROOT / "benchmarks/tasks"), "plan-execute")
+    assert result["summary"]["median_execution_time_seconds"] >= 0
+    assert result["summary"]["strategy"] == "plan-execute"
 
 
 def test_reports_and_docker_limits(tmp_path):
